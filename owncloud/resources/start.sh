@@ -4,21 +4,20 @@
 if [ ! -f /etc/apache2/ssl/server.key ]; then
 	mkdir -p /etc/apache2/ssl
 	KEY=/etc/apache2/ssl/server.key
-	DOMAIN=$(hostname)
-	export PASSPHRASE=$(head -c 128 /dev/urandom  | uuencode - | grep -v "^end" | tr "\n" "d")
+	DOMAIN="owc.jaymob.de"
 	SUBJ="
-C=UK
-ST=England
-O=Dischord
-localityName=Manchester
+C=DE
+ST=Berlin
+O=JayMob
+localityName=Berlin
 commonName=$DOMAIN
 organizationalUnitName=
-emailAddress=nick@dischord.org
+emailAddress=admin@jaymob.de
 "
-	openssl genrsa -des3 -out /etc/apache2/ssl/server.key -passout env:PASSPHRASE 2048
-	openssl req -new -batch -subj "$(echo -n "$SUBJ" | tr "\n" "/")" -key $KEY -out /tmp/$DOMAIN.csr -passin env:PASSPHRASE 
+	openssl genrsa -des3 -out /etc/apache2/ssl/server.key -passout env:CERT_PASSPHRASE 2048
+	openssl req -new -batch -subj "$(echo -n "$SUBJ" | tr "\n" "/")" -key $KEY -out /tmp/$DOMAIN.csr -passin env:CERT_PASSPHRASE 
 	cp $KEY $KEY.orig
-	openssl rsa -in $KEY.orig -out $KEY -passin env:PASSPHRASE
+	openssl rsa -in $KEY.orig -out $KEY -passin env:CERT_PASSPHRASE
 	openssl x509 -req -days 365 -in /tmp/$DOMAIN.csr -signkey $KEY -out /etc/apache2/ssl/server.crt
 fi
 

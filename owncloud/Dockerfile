@@ -9,8 +9,13 @@ RUN ln -s /bin/true /sbin/initctl
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
 
-RUN echo "mysql-server-5.5 mysql-server/root_password password root123" | debconf-set-selections
-RUN echo "mysql-server-5.5 mysql-server/root_password_again password root123" | debconf-set-selections
+# Set passwords (these need to be changed!)
+ENV MYSQL_ROOT rootpass
+ENV MYSQL_OWNCLOUD owncloudpass
+ENV CERT_PASSPHRASE passphrase
+
+RUN echo "mysql-server-5.5 mysql-server/root_password password $MYSQL_ROOT" | debconf-set-selections
+RUN echo "mysql-server-5.5 mysql-server/root_password_again password $MYSQL_ROOT" | debconf-set-selections
 RUN echo "mysql-server-5.5 mysql-server/root_password seen true" | debconf-set-selections
 RUN echo "mysql-server-5.5 mysql-server/root_password_again seen true" | debconf-set-selections
 
@@ -32,6 +37,7 @@ RUN ln -s /etc/apache2/sites-available/001-owncloud.conf /etc/apache2/sites-enab
 RUN a2enmod rewrite ssl
 
 EXPOSE :443
+EXPOSE :80
 
 RUN chown -R www-data:www-data /var/www/owncloud
 RUN chmod +x /start.sh
