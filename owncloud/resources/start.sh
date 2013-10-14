@@ -8,11 +8,11 @@ if [ ! -f /etc/apache2/ssl/server.key ]; then
 	SUBJ="
 C=DE
 ST=Berlin
-O=JayMob
+O=JacksonMobile GmbH
 localityName=Berlin
 commonName=$DOMAIN
 organizationalUnitName=
-emailAddress=admin@jaymob.de
+emailAddress=webmaster@jaymob.de
 "
 	openssl genrsa -des3 -out /etc/apache2/ssl/server.key -passout env:CERT_PASSPHRASE 2048
 	openssl req -new -batch -subj "$(echo -n "$SUBJ" | tr "\n" "/")" -key $KEY -out /tmp/$DOMAIN.csr -passin env:CERT_PASSPHRASE 

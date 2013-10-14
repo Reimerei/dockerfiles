@@ -1,5 +1,5 @@
 FROM ubuntu:12.04
-MAINTAINER Nick Jones "nick@dischord.org"
+MAINTAINER Björn Reimer "docker@bjrm.de"
 RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" >> /etc/apt/sources.list
 RUN apt-get -y update
 
@@ -33,6 +33,7 @@ RUN rm /tmp/cfgmysql.sh
 ADD resources/001-owncloud.conf /etc/apache2/sites-available/
 ADD resources/start.sh /
 
+RUN rm /etc/apache2/sites-enabled/*
 RUN ln -s /etc/apache2/sites-available/001-owncloud.conf /etc/apache2/sites-enabled/
 RUN a2enmod rewrite ssl
 
